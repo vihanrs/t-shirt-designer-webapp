@@ -19,20 +19,22 @@ import {
   CANVAS_CONFIG,
   DEFAULT_TEXT_CONFIG,
   TSHIRT_TYPES,
+  TSHIRT_COLOR_CODES,
 } from "../constants/designConstants";
 
 import { setSelectedType, setTshirtColor } from "../features/tshirtSlice";
 import { useRef } from "react";
+import SaveDesign from "./SaveDesign";
+import { useCanvas } from "@/hooks/useCanvas";
 
 const ToolBar = () => {
-  // const { toast } = useToast();
   const dispatch = useDispatch();
-  const selectedType = useSelector((state) => state.tshirt.selectedType);
-  const canvas = useSelector((state) => state.canvas.fabricCanvas);
-  const selectedObject = useSelector((state) => state.canvas.selectedObject);
   const fileInputRef = useRef(null); // use for handle image input
+  const selectedType = useSelector((state) => state.tshirt.selectedType);
+  const { activeCanvas, selectedObject } = useCanvas();
 
   const handleTypeChange = (value) => {
+    console.log("Selected Tshirt " + value);
     dispatch(setSelectedType(value));
   };
 
@@ -47,7 +49,7 @@ const ToolBar = () => {
   };
 
   const handleAddImage = (e) => {
-    if (!canvas || !e.target.files || !e.target.files[0]) return;
+    if (!activeCanvas || !e.target.files || !e.target.files[0]) return;
 
     const file = e.target.files[0];
     const reader = new FileReader();
@@ -73,13 +75,13 @@ const ToolBar = () => {
 
         // Center the image
         image.set({
-          left: (canvas.width - image.getScaledWidth()) / 2,
-          top: (canvas.height - image.getScaledHeight()) / 2,
+          left: (activeCanvas.width - image.getScaledWidth()) / 2,
+          top: (activeCanvas.height - image.getScaledHeight()) / 2,
         });
 
-        canvas.add(image);
-        canvas.setActiveObject(image);
-        canvas.renderAll();
+        activeCanvas.add(image);
+        activeCanvas.setActiveObject(image);
+        activeCanvas.renderAll();
       };
     };
 
@@ -89,23 +91,23 @@ const ToolBar = () => {
   };
 
   const handleAddText = () => {
-    if (!canvas) return;
+    if (!activeCanvas) return;
 
     const text = new fabric.Textbox("Add Your Text Here...", {
       ...DEFAULT_TEXT_CONFIG,
-      left: canvas.width / 2 - 15,
-      top: canvas.height / 2,
+      left: activeCanvas.width / 2,
+      top: activeCanvas.height / 2,
       width: 200,
       editable: false,
     });
 
-    canvas.add(text);
-    canvas.setActiveObject(text);
-    canvas.renderAll();
+    activeCanvas.add(text);
+    activeCanvas.setActiveObject(text);
+    activeCanvas.renderAll();
   };
 
   const handleAddLine = () => {
-    if (!canvas) return;
+    if (!activeCanvas) return;
 
     const line = new fabric.Line([100, 200, 250, 200], {
       stroke: "black",
@@ -115,17 +117,17 @@ const ToolBar = () => {
       strokeLineCap: "round",
     });
 
-    canvas.add(line);
-    canvas.setActiveObject(line);
-    canvas.renderAll();
+    activeCanvas.add(line);
+    activeCanvas.setActiveObject(line);
+    activeCanvas.renderAll();
   };
 
   const handleDelete = () => {
-    if (!canvas || !selectedObject) return;
+    if (!activeCanvas || !selectedObject) return;
 
-    canvas.remove(selectedObject);
-    canvas.discardActiveObject();
-    canvas.renderAll();
+    activeCanvas.remove(selectedObject);
+    activeCanvas.discardActiveObject();
+    activeCanvas.renderAll();
   };
 
   return (
@@ -183,19 +185,11 @@ const ToolBar = () => {
                 Select the base color of your t-shirt
               </p>
             </div>
-            <div className="flex gap-3">
-              {[
-                "#FF0000",
-                "#0000FF",
-                "#00FF00",
-                "#FFFF00",
-                "#000000",
-                "#808080",
-                "#FFFFFF",
-              ].map((color) => (
+            <div className="flex flex-wrap gap-3">
+              {TSHIRT_COLOR_CODES.map((color) => (
                 <Button
                   key={color}
-                  className="w-8 h-8 rounded-full p-0"
+                  className="w-8 h-8 rounded-full p-0 border-2 border-gray-200 shadow hover:shadow-lg"
                   style={{ backgroundColor: color }}
                   onClick={() => handleColorChange(color)}
                 />
@@ -208,6 +202,7 @@ const ToolBar = () => {
         <Trash />
         <span>Delete</span>
       </Button>
+      <SaveDesign />
     </div>
   );
 };

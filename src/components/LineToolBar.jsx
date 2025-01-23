@@ -1,13 +1,11 @@
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { Separator } from "@/components/ui/separator";
+import { useCanvas } from "@/hooks/useCanvas";
 
 const LineToolBar = () => {
-  const selectedObject = useSelector((state) => state.canvas.selectedObject);
-  const canvas = useSelector((state) => state.canvas.fabricCanvas);
-
+  const { selectedObject, activeCanvas } = useCanvas();
   const [color, setColor] = useState("#000000");
   const [strokeWidth, setStrokeWidth] = useState(3);
 
@@ -23,20 +21,20 @@ const LineToolBar = () => {
   }
 
   const handleColorChange = (e) => {
-    if (!selectedObject || !canvas) return;
+    if (!selectedObject || !activeCanvas) return;
     const newColor = e.target.value;
     setColor(newColor);
     selectedObject.set("stroke", newColor);
-    canvas.renderAll();
+    activeCanvas.renderAll();
   };
 
   const handleStrokeWidthChange = (e) => {
-    if (!selectedObject || !canvas) return;
+    if (!selectedObject || !activeCanvas) return;
     const newSize = parseInt(e.target.value, 10);
     if (isNaN(newSize) || newSize < 1) return; // Prevent invalid input
     setStrokeWidth(newSize);
     selectedObject.set("strokeWidth", newSize);
-    canvas.renderAll();
+    activeCanvas.renderAll();
   };
 
   return (

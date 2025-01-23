@@ -2,17 +2,16 @@ import { useEffect, useRef } from "react";
 import * as fabric from "fabric";
 import { CANVAS_CONFIG } from "../constants/designConstants";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  setCanvas,
-  setSelectedObject,
-  clearSelectedObject,
-} from "../features/canvasSlice";
+import { useCanvas } from "@/hooks/useCanvas";
 
 const TshirtCanvasFront = ({ svgPath }) => {
   const canvasRef = useRef(null);
   const fabricCanvasRef = useRef(null); // Store Fabric.js instance
   const tshirtColor = useSelector((state) => state.tshirt.tshirtColor);
+  const selectedView = useSelector((state) => state.tshirt.selectedView);
   const dispatch = useDispatch();
+
+  const { setFrontCanvas, setActiveCanvas, setSelectedObject } = useCanvas();
 
   // Initialize Fabric.js canvas only once
   useEffect(() => {
@@ -24,28 +23,41 @@ const TshirtCanvasFront = ({ svgPath }) => {
     });
 
     fabricCanvasRef.current = canvas; // Store instance in ref
-    dispatch(setCanvas(canvas));
+    setFrontCanvas(canvas);
+
+    if (selectedView === "front") {
+      setActiveCanvas(canvas);
+    }
 
     canvas.on("selection:created", (e) => {
-      dispatch(setSelectedObject(e.selected[0]));
+      setSelectedObject(e.selected[0]);
     });
 
     canvas.on("selection:updated", (e) => {
-      dispatch(setSelectedObject(e.selected[0]));
+      setSelectedObject(e.selected[0]);
     });
 
     canvas.on("selection:cleared", () => {
-      dispatch(clearSelectedObject());
+      setSelectedObject(null);
     });
 
     // Cleanup on unmount
     return () => {
       canvas.dispose();
       fabricCanvasRef.current = null;
-      dispatch(setCanvas(null));
-      dispatch(clearSelectedObject());
+      if (selectedView === "front") {
+        setActiveCanvas(null);
+      }
+      setSelectedObject(null);
     };
   }, [dispatch]); // Run once on mount
+
+  // useEffect to handle view changes
+  useEffect(() => {
+    if (selectedView === "front" && fabricCanvasRef.current) {
+      setActiveCanvas(fabricCanvasRef.current);
+    }
+  }, [selectedView, dispatch]);
 
   // Update clipPath whenever svgPath changes
   useEffect(() => {

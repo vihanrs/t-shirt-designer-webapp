@@ -10,12 +10,13 @@ import {
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
-import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 
+import { FONT_OPTIONS } from "../constants/designConstants";
+import { useCanvas } from "@/hooks/useCanvas";
+
 const TextToolBar = () => {
-  const selectedObject = useSelector((state) => state.canvas.selectedObject);
-  const canvas = useSelector((state) => state.canvas.fabricCanvas);
+  const { activeCanvas, selectedObject } = useCanvas();
 
   const [text, setText] = useState("");
   const [color, setColor] = useState("#000000");
@@ -38,40 +39,40 @@ const TextToolBar = () => {
   }
 
   const handleColorChange = (e) => {
-    if (!selectedObject || !canvas) return;
+    if (!selectedObject || !activeCanvas) return;
     const newColor = e.target.value;
     setColor(newColor);
     selectedObject.set("fill", newColor);
-    canvas.renderAll();
+    activeCanvas.renderAll();
   };
 
   const handleTextChange = (e) => {
-    if (!selectedObject || !canvas) return;
+    if (!selectedObject || !activeCanvas) return;
     const newText = e.target.value;
     setText(newText);
     selectedObject.set("text", newText);
-    canvas.renderAll();
+    activeCanvas.renderAll();
   };
 
   const handleFontChange = (newFont) => {
-    if (!selectedObject || !canvas) return;
+    if (!selectedObject || !activeCanvas) return;
     setFont(newFont);
     selectedObject.set("fontFamily", newFont);
-    canvas.renderAll();
+    activeCanvas.renderAll();
   };
 
   const handleFontSizeChange = (e) => {
-    if (!selectedObject || !canvas) return;
+    if (!selectedObject || !activeCanvas) return;
     const newSize = parseInt(e.target.value, 10);
     if (isNaN(newSize) || newSize < 1) return; // Prevent invalid input
     setFontSize(newSize);
     selectedObject.set("fontSize", newSize);
-    canvas.renderAll();
+    activeCanvas.renderAll();
   };
 
   return (
     <div className="flex flex-col gap-3 mt-4">
-      <Label className="text-lg font-bold">Edit Your Text</Label>
+      <Label className="text-lg font-bold ">Edit Your Text</Label>
       <Separator />
       <Label>Your Text</Label>
       <Input type="text" value={text} onChange={handleTextChange} />
@@ -82,27 +83,33 @@ const TextToolBar = () => {
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
-            <SelectItem value="arial">Arial</SelectItem>
-            <SelectItem value="calibri">Calibri</SelectItem>
-            <SelectItem value="times-new-romen">Times New Roman</SelectItem>
+            {FONT_OPTIONS.map((font) => (
+              <SelectItem key={font.value} value={font.value}>
+                {font.label}
+              </SelectItem>
+            ))}
           </SelectGroup>
         </SelectContent>
       </Select>
-      <Label>Font Size</Label>
-      <Input
-        type="number"
-        value={fontSize}
-        min="1"
-        onChange={handleFontSizeChange}
-        className="w-20 border rounded"
-      />
-      <Label>Font Color</Label>
-      <Input
-        type="color"
-        value={color}
-        onChange={handleColorChange}
-        className="w-15 border rounded"
-      />
+      <div className="flex gap-3 text-center items-center">
+        <Label>Font Size</Label>
+        <Input
+          type="number"
+          value={fontSize}
+          min="1"
+          onChange={handleFontSizeChange}
+          className="w-20 border rounded"
+        />
+      </div>
+      <div className="flex gap-3 text-center items-center">
+        <Label>Font Color</Label>
+        <Input
+          type="color"
+          value={color}
+          onChange={handleColorChange}
+          className="w-15 border rounded"
+        />
+      </div>
     </div>
   );
 };
