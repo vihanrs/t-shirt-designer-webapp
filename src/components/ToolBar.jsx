@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import * as fabric from "fabric";
 import { Button } from "@/components/ui/button";
-import { ImagePlus, Palette, Slash, Trash, Type } from "lucide-react";
+import { Box, ImagePlus, Palette, Slash, Trash, Type } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -10,6 +10,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+
 import {
   Popover,
   PopoverContent,
@@ -26,11 +35,17 @@ import { setSelectedType, setTshirtColor } from "../features/tshirtSlice";
 import { useRef } from "react";
 import SaveDesign from "./SaveDesign";
 import { useCanvas } from "@/hooks/useCanvas";
+import { FrontT } from "./FrontT";
+import { Canvas } from "@react-three/fiber";
+import { Environment, OrbitControls } from "@react-three/drei";
+
+const textureURL = "/2.webp";
 
 const ToolBar = () => {
   const dispatch = useDispatch();
   const fileInputRef = useRef(null); // use for handle image input
   const selectedType = useSelector((state) => state.tshirt.selectedType);
+  const tshirtColor = useSelector((state) => state.tshirt.tshirtColor);
   const { activeCanvas, selectedObject } = useCanvas();
 
   const handleTypeChange = (value) => {
@@ -130,6 +145,8 @@ const ToolBar = () => {
     activeCanvas.renderAll();
   };
 
+  // const handleThreeDView = () => {};
+
   return (
     <div className="flex flex-col gap-3">
       <Select value={selectedType} onValueChange={handleTypeChange}>
@@ -203,6 +220,33 @@ const ToolBar = () => {
         <span>Delete</span>
       </Button>
       <SaveDesign />
+      <Dialog>
+        <DialogTrigger asChild>
+          <Button>
+            <Box />
+            <span>3D Look</span>
+          </Button>
+        </DialogTrigger>
+        <DialogContent className="max-w-5xl p-6">
+          <DialogHeader>
+            <DialogTitle>3D T-Shirt Preview</DialogTitle>
+            <DialogDescription>
+              View your design in a 3D model.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="h-[600px] w-full">
+            <Canvas>
+              <OrbitControls
+                maxPolarAngle={Math.PI / 2} // Limit the vertical rotation to 90 degrees (looking down)
+                minPolarAngle={Math.PI / 3} // Limit the vertical rotation to 60 degrees (looking up)
+                // Limit horizontal rotation to 45 degrees to the right
+              />
+              <FrontT textureURL={textureURL} bgColor={tshirtColor} />
+              <Environment preset="sunset" />
+            </Canvas>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
