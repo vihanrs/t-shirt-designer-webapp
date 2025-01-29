@@ -38,6 +38,7 @@ import { useCanvas } from "@/hooks/useCanvas";
 import { FrontT } from "./FrontT";
 import { Canvas } from "@react-three/fiber";
 import { Environment, OrbitControls } from "@react-three/drei";
+import canvasStorageManager from "@/utils/canvasStorageManager";
 
 const textureURL = "/2.webp";
 
@@ -132,6 +133,10 @@ const ToolBar = () => {
       strokeLineCap: "round",
     });
 
+    activeCanvas.on("object:modified", () => {
+      const objects = activeCanvas.getObjects().map((obj) => obj.toJSON());
+      localStorage.setItem("canvasObjects", JSON.stringify(objects));
+    });
     activeCanvas.add(line);
     activeCanvas.setActiveObject(line);
     activeCanvas.renderAll();
@@ -145,7 +150,19 @@ const ToolBar = () => {
     activeCanvas.renderAll();
   };
 
-  // const handleThreeDView = () => {};
+  // Add a clear all function if needed
+  const handleClearAll = () => {
+    if (!activeCanvas) return;
+
+    // Clear all objects from canvas
+    activeCanvas.clear();
+
+    // Clear storage for current view
+    canvasStorageManager.clearCanvasStorage("all");
+
+    // Re-initialize canvas with basic settings if needed
+    activeCanvas.renderAll();
+  };
 
   return (
     <div className="flex flex-col gap-3">
@@ -218,6 +235,10 @@ const ToolBar = () => {
       <Button onClick={handleDelete} variant="destructive">
         <Trash />
         <span>Delete</span>
+      </Button>
+      <Button onClick={handleClearAll} variant="destructive">
+        <Trash />
+        <span>Clear All</span>
       </Button>
       <SaveDesign />
       <Dialog>

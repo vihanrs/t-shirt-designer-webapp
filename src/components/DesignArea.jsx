@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from "react-redux";
 import { Card, CardContent } from "@/components/ui/card";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { Button } from "@/components/ui/button";
 import { TSHIRT_TYPES } from "../constants/designConstants";
 import TshirtCanvasFront from "./TshirtCanvasFront";
 import TshirtCanvasBack from "./TshirtCanvasBack";
@@ -8,7 +8,7 @@ import { setSelectedView } from "../features/tshirtSlice";
 import { useCanvas } from "@/hooks/useCanvas";
 
 const DesignArea = () => {
-  // Get these values from Redux store
+  // Get values from Redux store
   const dispatch = useDispatch();
   const selectedType = useSelector((state) => state.tshirt.selectedType);
   const selectedView = useSelector((state) => state.tshirt.selectedView);
@@ -19,61 +19,54 @@ const DesignArea = () => {
     return view === "front" ? tshirtType.frontPath : tshirtType.backPath;
   };
 
-  const handleViewChange = (value) => {
-    if (value) {
-      // Clear any selected object before switching views
+  const handleViewChange = (view) => {
+    if (view !== selectedView) {
+      // Clear selected object before switching views
       if (activeCanvas) {
         activeCanvas.discardActiveObject();
         activeCanvas.renderAll();
       }
-
       setSelectedObject(null);
-      dispatch(setSelectedView(value));
+      dispatch(setSelectedView(view));
     }
   };
 
   return (
-    <>
-      <div className="text-center justify-center mb-5 bg-white">
-        <ToggleGroup
-          type="single"
-          value={selectedView}
-          onValueChange={handleViewChange}
-          className=""
+    <div className="flex flex-col items-center">
+      {/* Toggle Buttons */}
+      <div className="flex gap-4 mb-5">
+        <Button
+          onClick={() => handleViewChange("front")}
+          variant={selectedView === "front" ? "default" : "outline"}
         >
-          <ToggleGroupItem value="front" className="w-full">
-            <p className="h-fit w-full">Front View</p>
-          </ToggleGroupItem>
-          <ToggleGroupItem value="back" className="w-full">
-            <p className="h-fit w-full">Back View</p>
-          </ToggleGroupItem>
-        </ToggleGroup>
+          Front View
+        </Button>
+        <Button
+          onClick={() => handleViewChange("back")}
+          variant={selectedView === "back" ? "default" : "outline"}
+        >
+          Back View
+        </Button>
       </div>
-      <div className="flex items-start justify-center mb-0">
-        <Card className={selectedView !== "front" ? "opacity-50 " : ""}>
-          <CardContent>
-            <div
-              className={`w-full h-full relative ${
-                selectedView !== "front" ? "pointer-events-none" : ""
-              }`}
-            >
-              <TshirtCanvasFront view="front" svgPath={getSvgPath("front")} />
-            </div>
-          </CardContent>
-        </Card>
-        <Card className={selectedView !== "back" ? "opacity-50" : ""}>
-          <CardContent>
-            <div
-              className={`w-full h-full relative ${
-                selectedView !== "back" ? "pointer-events-none" : ""
-              }`}
-            >
-              <TshirtCanvasBack view="front" svgPath={getSvgPath("front")} />
-            </div>
-          </CardContent>
-        </Card>
+
+      {/* Conditional Rendering: Only show the selected canvas */}
+      <div className="flex justify-center">
+        {selectedView === "front" && (
+          <Card>
+            <CardContent>
+              <TshirtCanvasFront svgPath={getSvgPath("front")} />
+            </CardContent>
+          </Card>
+        )}
+        {selectedView === "back" && (
+          <Card>
+            <CardContent>
+              <TshirtCanvasBack svgPath={getSvgPath("back")} />
+            </CardContent>
+          </Card>
+        )}
       </div>
-    </>
+    </div>
   );
 };
 
