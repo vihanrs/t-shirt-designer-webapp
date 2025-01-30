@@ -25,7 +25,6 @@ const TextToolBar = () => {
 
   useEffect(() => {
     if (selectedObject && selectedObject.type === "textbox") {
-      console.log(selectedObject);
       setText(selectedObject.text || "");
       setColor(selectedObject.fill || "#000000");
       setFont(selectedObject.fontFamily || "arial");

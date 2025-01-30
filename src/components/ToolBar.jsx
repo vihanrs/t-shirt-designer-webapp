@@ -133,10 +133,6 @@ const ToolBar = () => {
       strokeLineCap: "round",
     });
 
-    activeCanvas.on("object:modified", () => {
-      const objects = activeCanvas.getObjects().map((obj) => obj.toJSON());
-      localStorage.setItem("canvasObjects", JSON.stringify(objects));
-    });
     activeCanvas.add(line);
     activeCanvas.setActiveObject(line);
     activeCanvas.renderAll();
