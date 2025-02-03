@@ -1,4 +1,4 @@
-const STORAGE_KEYS = {
+export const STORAGE_KEYS = {
   FRONT_CANVAS: "tshirt-designer-front",
   BACK_CANVAS: "tshirt-designer-back",
 };
@@ -15,6 +15,7 @@ const canvasStorageManager = {
       localStorage.removeItem(storageKey);
       // Get and save new objects
       const objects = canvas.getObjects().map((obj) => obj.toJSON());
+
       localStorage.setItem(
         view === "front" ? STORAGE_KEYS.FRONT_CANVAS : STORAGE_KEYS.BACK_CANVAS,
         JSON.stringify(objects)

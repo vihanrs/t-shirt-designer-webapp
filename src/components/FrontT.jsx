@@ -5,24 +5,24 @@ Command: npx gltfjsx@6.5.3 public/3Dmodels/front.glb -o src/components/FrontT.js
 import { Center, Decal, useGLTF, useTexture } from "@react-three/drei";
 import { useEffect, useRef } from "react";
 
-export function FrontT(props) {
-  const texture = useTexture("/2.webp");
+export function FrontT({ tshirtColor, designTexture, onViewChange }) {
+  const texture = useTexture(designTexture || "/2.webp");
   const { nodes, materials } = useGLTF("/3Dmodels/front.glb");
   const meshRef = useRef();
 
   useEffect(() => {
     if (meshRef.current) {
-      meshRef.current.material.color.set(props.tshirtColor); // ✅ Dynamically update color
+      meshRef.current.material.color.set(tshirtColor); // ✅ Dynamically update color
     }
-  }, [props.tshirtColor]);
+  }, [tshirtColor]);
 
   const handleClick = () => {
-    props.onViewChange("front");
+    onViewChange("front");
   };
 
   return (
     <Center>
-      <group {...props} dispose={null}>
+      <group dispose={null}>
         <group scale={0.09} position={[0, -1, 5]}>
           <mesh
             geometry={nodes.Object_0.geometry}
@@ -30,7 +30,8 @@ export function FrontT(props) {
             ref={meshRef}
           />
           <mesh geometry={nodes.Object_0_1.geometry}>
-            <meshBasicMaterial transparent opacity={0} />
+            <meshBasicMaterial />
+            {/* Adjusted to non-transparent */}
             <Decal
               // debug // Makes "bounding box" of the decal visible
               position={[0, 30, 15]} //{pos} // Position of the decal
@@ -44,6 +45,9 @@ export function FrontT(props) {
                 transparent
                 polygonOffset
                 polygonOffsetFactor={-1} // The mesh should take precedence over the original
+                // side={2} // DoubleSide
+                // alphaTest={0.1}
+                // depthTest={true} // Ensure depth testing is enabled
               />
             </Decal>
           </mesh>
@@ -58,4 +62,4 @@ export function FrontT(props) {
   );
 }
 
-useGLTF.preload("/models/front.glb");
+useGLTF.preload("/3Dmodels/front.glb");

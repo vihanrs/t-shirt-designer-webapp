@@ -1,11 +1,12 @@
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import * as fabric from "fabric";
 import { CANVAS_CONFIG } from "../constants/designConstants";
 import { useDispatch, useSelector } from "react-redux";
 import { useCanvas } from "@/hooks/useCanvas";
 import canvasStorageManager from "@/utils/canvasStorageManager";
+import { canvasSyncManager } from "@/utils/canvasSyncManager";
 
-export const useTshirtCanvas = ({ svgPath, view }) => {
+export const useTshirtCanvas = ({ svgPath, view, onDesignUpdate }) => {
   const canvasRef = useRef(null);
   const fabricCanvasRef = useRef(null);
   const tshirtColor = useSelector((state) => state.tshirt.tshirtColor);
@@ -21,6 +22,17 @@ export const useTshirtCanvas = ({ svgPath, view }) => {
       canvasStorageManager.saveCanvasObjects(view, fabricCanvasRef.current);
     }
   };
+
+  // Function to notify design changes
+  const notifyDesignChange = useCallback(() => {
+    if (fabricCanvasRef.current && onDesignUpdate) {
+      const textureDataUrl = canvasSyncManager.getCanvasTexture(
+        fabricCanvasRef.current
+      );
+      onDesignUpdate(textureDataUrl);
+    }
+  }, [onDesignUpdate]);
+
   // Initialize Fabric.js Canvas
   useEffect(() => {
     if (!canvasRef.current) return;
@@ -62,9 +74,17 @@ export const useTshirtCanvas = ({ svgPath, view }) => {
       setSelectedObject(null);
     });
 
+    // Listen for any changes on the canvas
+    canvas.on("object:modified", notifyDesignChange);
+    canvas.on("object:added", notifyDesignChange);
+    canvas.on("object:removed", notifyDesignChange);
+
     // Cleanup
     return () => {
       saveCanvas();
+      canvas.off("object:modified", notifyDesignChange);
+      canvas.off("object:added", notifyDesignChange);
+      canvas.off("object:removed", notifyDesignChange);
       canvas.dispose();
       fabricCanvasRef.current = null;
       if (selectedView === view) {
@@ -105,6 +125,7 @@ export const useTshirtCanvas = ({ svgPath, view }) => {
 };
 
 // Helper function to add objects to canvas
+// Helper function to add objects to canvas
 const addFabricObject = (canvas, objectData) => {
   switch (objectData.type) {
     case "Line":
@@ -127,21 +148,32 @@ const addFabricObject = (canvas, objectData) => {
       );
       break;
     case "Textbox":
-      canvas.add(
-        new fabric.Textbox(objectData.text, {
-          left: objectData.left,
-          top: objectData.top,
-          width: objectData.width,
-          fontSize: objectData.fontSize,
-          fontFamily: objectData.fontFamily,
-          textAlign: objectData.textAlign,
-          fill: objectData.fill,
-          scaleX: objectData.scaleX,
-          scaleY: objectData.scaleY,
-          angle: objectData.angle,
-          opacity: objectData.opacity,
-        })
-      );
+      const textbox = new fabric.Textbox(objectData.text, {
+        left: objectData.left,
+        top: objectData.top,
+        width: objectData.width,
+        fontSize: objectData.fontSize,
+        fontFamily: objectData.fontFamily,
+        textAlign: objectData.textAlign,
+        fill: objectData.fill,
+        scaleX: objectData.scaleX,
+        scaleY: objectData.scaleY,
+        angle: objectData.angle,
+        opacity: objectData.opacity,
+      });
+
+      // Force text re-rendering and positioning
+      textbox.initDimensions();
+      textbox.set({
+        width: textbox.width,
+        height: textbox.height,
+      });
+
+      canvas.add(textbox);
+
+      // Ensure proper rendering after a short delay
+
+      canvas.renderAll();
       break;
     case "Image":
       if (!objectData.src.startsWith("data:image")) return;
