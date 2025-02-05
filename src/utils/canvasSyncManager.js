@@ -23,16 +23,6 @@ export const canvasSyncManager = {
     }
   },
 
-  // getCanvasTextureFromStorage: (storageKey) => {
-  //   try {
-  //     const storedData = localStorage.getItem(storageKey);
-  //     return storedData ? `data:image/png;base64,${storedData}` : null;
-  //   } catch (error) {
-  //     console.error("Error retrieving canvas texture from storage:", error);
-  //     return null;
-  //   }
-  // },
-
   getCanvasTextureFromStorage: (view) => {
     return new Promise((resolve, reject) => {
       try {
@@ -52,8 +42,8 @@ export const canvasSyncManager = {
 
         // Create a temporary canvas
         const tempCanvas = new fabric.Canvas(null, {
-          width: 600, // Set appropriate width
-          height: 600, // Set appropriate height
+          width: 450, // Set appropriate width
+          height: 500, // Set appropriate height
         });
 
         // Use fabric.util.enlivenObjects to recreate canvas objects

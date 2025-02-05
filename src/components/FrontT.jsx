@@ -16,47 +16,44 @@ export function FrontT({ tshirtColor, designTexture, onViewChange }) {
     }
   }, [tshirtColor]);
 
-  const handleClick = () => {
-    onViewChange("front");
+  const handleClick = (view) => {
+    onViewChange(view);
   };
 
   return (
     <Center>
       <group dispose={null}>
-        <group scale={0.09} position={[0, -1, 5]}>
-          <mesh
-            geometry={nodes.Object_0.geometry}
-            material={materials.material}
-            ref={meshRef}
-          />
-          <mesh geometry={nodes.Object_0_1.geometry}>
-            <meshBasicMaterial />
-            {/* Adjusted to non-transparent */}
-            <Decal
-              // debug // Makes "bounding box" of the decal visible
-              position={[0, 30, 15]} //{pos} // Position of the decal
-              rotation={[0, 0, 0]} // Rotation of the decal (can be a vector or a degree in radians)
-              scale={[65, 65, 35]} //{scale} // Scale of the decal
-              onClick={handleClick}
-            >
-              <meshStandardMaterial
-                map={texture}
-                toneMapped={false}
-                transparent
-                polygonOffset
-                polygonOffsetFactor={-1} // The mesh should take precedence over the original
-                // side={2} // DoubleSide
-                // alphaTest={0.1}
-                // depthTest={true} // Ensure depth testing is enabled
-              />
-            </Decal>
-          </mesh>
-        </group>
-        {/* <mesh
-        geometry={nodes.Object_6.geometry}
-        material={materials.material_1}
-        scale={0.011}
-      /> */}
+        <mesh
+          geometry={nodes.Object_6.geometry}
+          material={materials.material_1}
+          scale={0.09}
+          position={[0, -1, 5]}
+          ref={meshRef}
+          onClick={() => handleClick("back")}
+        />
+        <mesh
+          geometry={nodes.Object_0_1.geometry}
+          scale={0.09}
+          position={[0, -1, 5]}
+        >
+          <meshBasicMaterial transparent opacity={0} />
+          {/* Adjusted to non-transparent */}
+          <Decal
+            // debug // Makes "bounding box" of the decal visible
+            position={[0, 30, 15]} //{pos} // Position of the decal
+            rotation={[0, 0, 0]} // Rotation of the decal (can be a vector or a degree in radians)
+            scale={[65, 65, 35]} //{scale} // Scale of the decal
+            onClick={() => handleClick("front")}
+          >
+            <meshStandardMaterial
+              map={texture}
+              toneMapped={false}
+              transparent
+              polygonOffset
+              polygonOffsetFactor={-1} // The mesh should take precedence over the original
+            />
+          </Decal>
+        </mesh>
       </group>
     </Center>
   );

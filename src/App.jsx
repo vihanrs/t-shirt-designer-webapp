@@ -7,12 +7,13 @@ import ToolBar from "./components/ToolBar";
 import { Toaster } from "@/components/ui/toaster";
 import { Canvas } from "@react-three/fiber";
 import { Environment, OrbitControls } from "@react-three/drei";
-import { FrontT } from "./components/FrontT";
+// import { FrontT } from "./components/FrontT";
 import { setSelectedView } from "./features/tshirtSlice";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useEffect, useState } from "react";
 import { useCanvas } from "./hooks/useCanvas";
 import { canvasSyncManager } from "./utils/canvasSyncManager";
+import { TshirtModel } from "./components/TShirtModel";
 
 const textureURL = "/2.webp";
 function App() {
@@ -23,6 +24,16 @@ function App() {
   const [designTexture, setDesignTexture] = useState(null);
   const [designTextureBack, setDesignTextureBack] = useState(null);
   const { frontCanvas, backCanvas } = useCanvas();
+
+  const loadInitialTextures = async () => {
+    const backTexture = await canvasSyncManager.getCanvasTextureFromStorage(
+      "back"
+    );
+    console.log("backTexture", backTexture);
+    setDesignTextureBack(backTexture);
+  };
+
+  loadInitialTextures();
 
   // Add this effect to watch for canvas changes
   useEffect(() => {
@@ -109,13 +120,30 @@ function App() {
           </ScrollArea>
         </div>
         <div className="h-[600px] w-full">
-          <Canvas>
+          {/* <Canvas>
             <OrbitControls
               maxPolarAngle={Math.PI / 2} // Limit the vertical rotation to 90 degrees (looking down)
               minPolarAngle={Math.PI / 3} // Limit the vertical rotation to 60 degrees (looking up)
               // Limit horizontal rotation to 45 degrees to the right
             />
             <FrontT
+              textureURL={textureURL}
+              tshirtColor={tshirtColor}
+              selectedView={selectedView}
+              onViewChange={handleViewChange}
+              designTexture={designTexture}
+              designTextureBack={designTextureBack}
+            />
+            <Environment preset="sunset" />
+          </Canvas> */}
+
+          <Canvas>
+            <OrbitControls
+              maxPolarAngle={Math.PI / 2} // Limit the vertical rotation to 90 degrees (looking down)
+              minPolarAngle={Math.PI / 3} // Limit the vertical rotation to 60 degrees (looking up)
+              // Limit horizontal rotation to 45 degrees to the right
+            />
+            <TshirtModel
               textureURL={textureURL}
               tshirtColor={tshirtColor}
               selectedView={selectedView}
