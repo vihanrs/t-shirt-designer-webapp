@@ -15,7 +15,7 @@ import { useEffect, useState } from "react";
 import { FONT_OPTIONS } from "../constants/designConstants";
 import { useCanvas } from "@/hooks/useCanvas";
 
-const TextToolBar = () => {
+const TextToolBar = ({ manualSync }) => {
   const { activeCanvas, selectedObject } = useCanvas();
 
   const [text, setText] = useState("");
@@ -43,6 +43,7 @@ const TextToolBar = () => {
     setColor(newColor);
     selectedObject.set("fill", newColor);
     activeCanvas.renderAll();
+    manualSync();
   };
 
   const handleTextChange = (e) => {
@@ -51,6 +52,7 @@ const TextToolBar = () => {
     setText(newText);
     selectedObject.set("text", newText);
     activeCanvas.renderAll();
+    manualSync();
   };
 
   const handleFontChange = (newFont) => {
@@ -58,6 +60,7 @@ const TextToolBar = () => {
     setFont(newFont);
     selectedObject.set("fontFamily", newFont);
     activeCanvas.renderAll();
+    manualSync();
   };
 
   const handleFontSizeChange = (e) => {
@@ -67,6 +70,7 @@ const TextToolBar = () => {
     setFontSize(newSize);
     selectedObject.set("fontSize", newSize);
     activeCanvas.renderAll();
+    manualSync();
   };
 
   return (

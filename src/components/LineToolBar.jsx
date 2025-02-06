@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Separator } from "@/components/ui/separator";
 import { useCanvas } from "@/hooks/useCanvas";
 
-const LineToolBar = () => {
+const LineToolBar = ({ manualSync }) => {
   const { selectedObject, activeCanvas } = useCanvas();
   const [color, setColor] = useState("#000000");
   const [strokeWidth, setStrokeWidth] = useState(3);
@@ -26,6 +26,7 @@ const LineToolBar = () => {
     setColor(newColor);
     selectedObject.set("stroke", newColor);
     activeCanvas.renderAll();
+    manualSync();
   };
 
   const handleStrokeWidthChange = (e) => {
@@ -35,6 +36,7 @@ const LineToolBar = () => {
     setStrokeWidth(newSize);
     selectedObject.set("strokeWidth", newSize);
     activeCanvas.renderAll();
+    manualSync();
   };
 
   return (
