@@ -44,7 +44,7 @@ function App() {
       <Header />
       <div className="flex gap-6 mt-5">
         <div className="p-5 rounded-md ">
-          <ScrollArea className="w-[220px] h-[580px] bg-white rounded-md border p-4">
+          <ScrollArea className="w-[145px] h-[600px] bg-white rounded-md border p-4">
             <ToolBar manualSync={manualSync} />
             <TextToolBar manualSync={manualSync} />
             <LineToolBar manualSync={manualSync} />

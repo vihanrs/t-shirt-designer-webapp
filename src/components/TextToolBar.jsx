@@ -75,13 +75,18 @@ const TextToolBar = ({ manualSync }) => {
 
   return (
     <div className="flex flex-col gap-3 mt-4">
-      <Label className="text-lg font-bold ">Edit Your Text</Label>
+      <Label className="text-lg font-bold ">Edit Text</Label>
       <Separator />
       <Label>Your Text</Label>
-      <Input type="text" value={text} onChange={handleTextChange} />
+      <Input
+        className="w-[110px]"
+        type="text"
+        value={text}
+        onChange={handleTextChange}
+      />
       <Label>Font Type</Label>
       <Select value={font} onValueChange={handleFontChange}>
-        <SelectTrigger className="w-[180px]">
+        <SelectTrigger className="w-[110px]">
           <SelectValue placeholder="Select Font" />
         </SelectTrigger>
         <SelectContent>
@@ -94,23 +99,23 @@ const TextToolBar = ({ manualSync }) => {
           </SelectGroup>
         </SelectContent>
       </Select>
-      <div className="flex gap-3 text-center items-center">
-        <Label>Font Size</Label>
+      <div className="flex gap-2 items-center">
+        <Label className="w-10">Font Size</Label>
         <Input
           type="number"
           value={fontSize}
           min="1"
           onChange={handleFontSizeChange}
-          className="w-20 border rounded"
+          className="w-[62px] border rounded"
         />
       </div>
-      <div className="flex gap-3 text-center items-center">
+      <div className="flex gap-2 items-center">
         <Label>Font Color</Label>
         <Input
           type="color"
           value={color}
           onChange={handleColorChange}
-          className="w-15 border rounded"
+          className="w-13 border rounded"
         />
       </div>
     </div>

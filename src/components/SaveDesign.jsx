@@ -138,7 +138,7 @@ const SaveDesign = () => {
         className="w-full bg-green-600 hover:bg-green-700"
       >
         <Save className="mr-2 h-4 w-4" />
-        Save Design
+        Save
       </Button>
     </div>
   );

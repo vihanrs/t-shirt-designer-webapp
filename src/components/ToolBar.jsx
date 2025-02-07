@@ -40,13 +40,10 @@ import { Canvas } from "@react-three/fiber";
 import { Environment, OrbitControls } from "@react-three/drei";
 import canvasStorageManager from "@/utils/canvasStorageManager";
 
-const textureURL = "/2.webp";
-
 const ToolBar = ({ manualSync }) => {
   const dispatch = useDispatch();
   const fileInputRef = useRef(null); // use for handle image input
   const selectedType = useSelector((state) => state.tshirt.selectedType);
-  const tshirtColor = useSelector((state) => state.tshirt.tshirtColor);
   const { activeCanvas, selectedObject } = useCanvas();
 
   const handleTypeChange = (value) => {
@@ -163,9 +160,9 @@ const ToolBar = ({ manualSync }) => {
   };
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-3 w-[110px]">
       <Select value={selectedType} onValueChange={handleTypeChange}>
-        <SelectTrigger className="w-[180px]">
+        <SelectTrigger>
           <SelectValue placeholder="Select T-Shirt" />
         </SelectTrigger>
         <SelectContent>
@@ -189,24 +186,24 @@ const ToolBar = ({ manualSync }) => {
       <Button onClick={triggerFileInput}>
         <ImagePlus />
 
-        <span>Add Design</span>
+        <span>Design</span>
       </Button>
 
       <Button onClick={handleAddText}>
         <Type />
-        <span>Add Text</span>
+        <span>Text</span>
       </Button>
 
       <Button onClick={handleAddLine}>
         <Slash />
-        <span>Add Line</span>
+        <span>Line</span>
       </Button>
 
       <Popover>
         <PopoverTrigger asChild>
           <Button>
             <Palette />
-            <span>Tshirt Color</span>
+            <span>Color</span>
           </Button>
         </PopoverTrigger>
         <PopoverContent className="ml-5 w-80">
@@ -232,40 +229,13 @@ const ToolBar = ({ manualSync }) => {
       </Popover>
       <Button onClick={handleDelete} variant="destructive">
         <Trash />
-        <span>Delete</span>
+        <span>Remove</span>
       </Button>
       <Button onClick={handleClearAll} variant="destructive">
         <Trash />
         <span>Clear All</span>
       </Button>
-      <SaveDesign />
-      <Dialog>
-        <DialogTrigger asChild>
-          <Button>
-            <Box />
-            <span>3D Look</span>
-          </Button>
-        </DialogTrigger>
-        <DialogContent className="max-w-5xl p-6">
-          <DialogHeader>
-            <DialogTitle>3D T-Shirt Preview</DialogTitle>
-            <DialogDescription>
-              View your design in a 3D model.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="h-[600px] w-full">
-            <Canvas>
-              <OrbitControls
-                maxPolarAngle={Math.PI / 2} // Limit the vertical rotation to 90 degrees (looking down)
-                minPolarAngle={Math.PI / 3} // Limit the vertical rotation to 60 degrees (looking up)
-                // Limit horizontal rotation to 45 degrees to the right
-              />
-              <FrontT textureURL={textureURL} bgColor={tshirtColor} />
-              <Environment preset="sunset" />
-            </Canvas>
-          </div>
-        </DialogContent>
-      </Dialog>
+      {/* <SaveDesign /> */}
     </div>
   );
 };
