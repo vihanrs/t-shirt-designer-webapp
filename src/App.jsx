@@ -6,12 +6,13 @@ import TextToolBar from "./components/TextToolBar";
 import ToolBar from "./components/ToolBar";
 import { Toaster } from "@/components/ui/toaster";
 import { Canvas } from "@react-three/fiber";
-import { Environment, OrbitControls } from "@react-three/drei";
+import { Environment, Loader, OrbitControls } from "@react-three/drei";
 import { setSelectedView } from "./features/tshirtSlice";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useCanvas } from "./hooks/useCanvas";
 import { TshirtModel } from "./components/TShirtModel";
 import { useCanvasTextureSync } from "./hooks/useCanvasTextureSync";
+import { Suspense } from "react";
 
 function App() {
   const tshirtColor = useSelector((state) => state.tshirt.tshirtColor);
@@ -44,7 +45,7 @@ function App() {
       <div className="flex gap-6 mt-5">
         <div className="p-5 rounded-md ">
           <ScrollArea className="w-[220px] h-[580px] bg-white rounded-md border p-4">
-            <ToolBar />
+            <ToolBar manualSync={manualSync} />
             <TextToolBar manualSync={manualSync} />
             <LineToolBar manualSync={manualSync} />
           </ScrollArea>
@@ -56,14 +57,17 @@ function App() {
               minPolarAngle={Math.PI / 3} // Limit the vertical rotation to 60 degrees (looking up)
               // Limit horizontal rotation to 45 degrees to the right
             />
-            <TshirtModel
-              tshirtColor={tshirtColor}
-              onViewChange={handleViewChange}
-              designTexture={designTextureFront}
-              designTextureBack={designTextureBack}
-            />
-            <Environment preset="sunset" />
+            <Suspense fallback={null}>
+              <TshirtModel
+                tshirtColor={tshirtColor}
+                onViewChange={handleViewChange}
+                designTexture={designTextureFront}
+                designTextureBack={designTextureBack}
+              />
+              <Environment preset="sunset" />
+            </Suspense>
           </Canvas>
+          <Loader />
         </div>
         <div className="">
           <DesignArea />

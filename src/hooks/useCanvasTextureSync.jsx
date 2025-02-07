@@ -41,11 +41,11 @@ export const useCanvasTextureSync = (options = {}) => {
 
     const debouncedUpdateFront = canvasSyncManager.debounce(
       () => updateTexture("front"),
-      500
+      100
     );
     const debouncedUpdateBack = canvasSyncManager.debounce(
       () => updateTexture("back"),
-      500
+      100
     );
 
     // Setup events for front canvas

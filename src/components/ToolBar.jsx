@@ -42,7 +42,7 @@ import canvasStorageManager from "@/utils/canvasStorageManager";
 
 const textureURL = "/2.webp";
 
-const ToolBar = () => {
+const ToolBar = ({ manualSync }) => {
   const dispatch = useDispatch();
   const fileInputRef = useRef(null); // use for handle image input
   const selectedType = useSelector((state) => state.tshirt.selectedType);
@@ -144,6 +144,7 @@ const ToolBar = () => {
     activeCanvas.remove(selectedObject);
     activeCanvas.discardActiveObject();
     activeCanvas.renderAll();
+    manualSync();
   };
 
   // Add a clear all function if needed
@@ -158,6 +159,7 @@ const ToolBar = () => {
 
     // Re-initialize canvas with basic settings if needed
     activeCanvas.renderAll();
+    manualSync();
   };
 
   return (
