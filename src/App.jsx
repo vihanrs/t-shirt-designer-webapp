@@ -49,8 +49,8 @@ function App() {
             <Header />
           </div>
           <main>
-            <div className="flex flex-col md:flex-row gap-10 items-center justify-around">
-              <div className="h-[560px] min-w-[500px] relative mx-6 md:mx-0">
+            <div className="flex flex-col lg:flex-row gap-28 md:gap-10 items-center justify-around">
+              <div className="h-[400px] md:h-[560px] w-[250px] md:min-w-[500px] relative mx-6 md:mx-0">
                 <Canvas>
                   <OrbitControls
                     maxPolarAngle={Math.PI / 2} // Limit the vertical rotation to 90 degrees (looking down)
@@ -95,7 +95,7 @@ function App() {
                 </div>
               </div>
 
-              <div className="">
+              <div className="w-[250px] md:min-w-[500px]">
                 <DesignArea />
               </div>
             </div>
@@ -105,7 +105,7 @@ function App() {
       <Toaster />
 
       {/* Infinite scrolling banner */}
-      <div className="fixed bottom-0 left-0 w-full bg-blue-600 py-2 overflow-hidden">
+      <div className="fixed bottom-0 left-0 w-full bg-blue-600 py-2 overflow-hidden z-50">
         <div className="relative flex whitespace-nowrap">
           <div className="animate-marquee flex">
             <span className="text-white mx-4">🚧 Site under development</span>

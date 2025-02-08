@@ -16,11 +16,15 @@ export function ToolsSidebar({ manualSync }) {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="outline" size="icon" className="md:hidden">
-          <Menu className="h-4 w-4" />
+        <Button
+          variant="outline"
+          size="icon"
+          className="lg:hidden fixed top-4 left-4 h-10 w-10"
+        >
+          <Menu className="h-6 w-6" />
         </Button>
       </SheetTrigger>
-      <SheetContent side="left" className="w-[280px] sm:w-[340px]">
+      <SheetContent side="left" className="w-[180px] sm:w-[340px]">
         <SheetHeader>
           <SheetTitle>Design Tools</SheetTitle>
         </SheetHeader>
@@ -34,7 +38,7 @@ export function ToolsSidebar({ manualSync }) {
       </SheetContent>
 
       {/* Desktop version - always visible */}
-      <div className="hidden md:block">
+      <div className="hidden lg:block">
         <div className="w-[160px] h-screen border-r bg-background">
           <div className="p-4">
             <h2 className="font-semibold mb-4">Design Tools</h2>
