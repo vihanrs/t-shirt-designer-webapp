@@ -110,12 +110,12 @@ const TextToolBar = ({ manualSync }) => {
         />
       </div>
       <div className="flex gap-2 items-center">
-        <Label>Font Color</Label>
+        <Label className="w-10">Font Color</Label>
         <Input
           type="color"
           value={color}
           onChange={handleColorChange}
-          className="w-13 border rounded"
+          className="w-[62px] border rounded"
         />
       </div>
     </div>
